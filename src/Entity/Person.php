@@ -4,37 +4,45 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
- */
 class Person
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var mixed
      */
-    private $id;
+    protected $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
-    private $firstName;
+    protected $firstName;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
-    private $lastName;
+    protected $lastName;
 
     /**
-     * @ORM\Column(type="date")
+     * @var \DateTime Date de naissance
+     * 
+     * @ORM\Column(type="date", nullable=false)
      */
-    private $birthDate;
+    protected $birthDate;
+    
+    /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     */
+    protected $birthPlace;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      */
-    private $birthPlace;
+    public function __construct($firstName, $lastName, $birthDate, $birthPlace)
+    {
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->birthDate = $birthDate;
+        $this->birthPlace = $birthPlace;
+    }
 
     public function getId(): ?int
     {
