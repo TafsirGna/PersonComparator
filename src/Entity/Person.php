@@ -36,12 +36,14 @@ class Person
     /**
      * 
      */
-    public function __construct($firstName, $lastName, $birthDate, $birthPlace)
+    public function __construct(Person $person = null)
     {
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
-        $this->birthDate = $birthDate;
-        $this->birthPlace = $birthPlace;
+        if ($person != null){
+            $this->firstName = $person->getFirstName();
+            $this->lastName = $person->getLastName();
+            $this->birthDate = $person->getBirthDate();
+            $this->birthPlace = $person->getBirthPlace();   
+        }
     }
 
     public function getId(): ?int

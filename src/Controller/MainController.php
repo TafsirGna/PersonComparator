@@ -42,13 +42,22 @@ class MainController extends AbstractController
         // returning the comparison's output
         if ($output["achieved"]){
 
-            $dbOnePerson = new DbOnePerson($comparator->getPersonOne());
-            $dbTwoPerson = new DbTwoPerson($comparator->getPersonTwo());
+            $result = [
+                "firstName" => [$output["firstName"]["percentage"], $output["firstName"]["output"]],
+                "lastName" => [$output["lastName"]["percentage"], $output["lastName"]["output"]],
+                "birthDate" => [$output["birthDate"]["output"]],
+                "birthPlace" => [$output["birthPlace"]["percentage"], $output["birthPlace"]["output"]],
+                "result"    => [$output["globalOutput"]["percentage"], $output["globalOutput"]["output"]],
+            ];
 
-            $comparisonResult = new ComparisonResult();
+            $comparisonResult = new ComparisonResult((new DbOnePerson($comparator->getPersonOne())), 
+                                                     (new DbTwoPerson($comparator->getPersonTwo())),
+                                                     json_encode($result));
+
+            // dd($comparisonResult);
 
             $em->persist($comparisonResult);
-            // $em->flush();
+            $em->flush();
 
             return $this->json($output, Response::HTTP_OK, []);
         }

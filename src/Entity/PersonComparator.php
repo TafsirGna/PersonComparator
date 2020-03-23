@@ -53,10 +53,13 @@ class PersonComparator
 
         $dataArray[2] = new \DateTime(date("d-m-Y",$dataArray[2]));
 
-        return new Person($dataArray[0], 
-                          $dataArray[1],
-                          $dataArray[2],
-                          $dataArray[3]);  
+        $person = new Person();
+        $person->setFirstName($dataArray[0]);
+        $person->setLastName($dataArray[1]);
+        $person->setBirthDate($dataArray[2]);
+        $person->setBirthPlace($dataArray[3]);
+
+        return $person;  
 
     }
 
@@ -116,24 +119,67 @@ class PersonComparator
         $stringOneArray = explode(" ", $stringOne);
         $stringTwoArray = explode(" ", $stringTwo);
 
+        if (sizeof($stringOneArray) > sizeof($stringTwoArray)){
+            $tmp = $stringTwoArray;
+            $stringTwoArray = $stringOneArray;
+            $stringOneArray = $tmp;
+        }
+
+        // dd($stringOneArray, $stringTwoArray);
+
         $globalPercentage = 0;
         
+        $someDataArray = [];
+
+        // filling in the array declared just above
         foreach ($stringOneArray as $itemOne) {
-            
-            $tmpString = $stringTwoArray[0];
-            $tmpPercentage = 100;
             foreach ($stringTwoArray as $itemTwo) {
                 $percentage = $this->compareString($itemOne, $itemTwo);
-                if ($percentage < $tmpPercentage){
-                    $tmpPercentage = $percentage;
-                    $tmpString = $itemTwo;
-                }
+                $someDataArray[$itemOne][$itemTwo] = $percentage;
             }
         }
 
-        $globalPercentage = $tmpPercentage;
+        // var_dump($someDataArray);
+
+        // after being filled, we get through the array
+        $results = [];
+        while (sizeof($someDataArray) != 0){
+
+            $min = ["", "", 1];
+            foreach ($someDataArray as $keyOne => $itemOne) {
+                foreach ($itemOne as $keyTwo => $itemTwo) {
+                    $itemTwo = explode("/", $itemTwo);
+                    $itemTwo = ($itemTwo[0]/$itemTwo[1]);
+                    if ($itemTwo < $min[2]){
+                        $min = [$keyOne, $keyTwo, $someDataArray[$keyOne][$keyTwo]];
+                    }
+                }
+            }
+            
+            $results[] = $min;
+            unset($someDataArray[$min[0]]);  
+            unset($stringTwoArray[$min[1]]);   
+        }
+
+        $numerator = $denominator = 0;
+        foreach ($results as $result) {
+            $result = explode("/", $result[2]);
+            $numerator += $result[0];
+            $denominator += $result[1];
+        }
+
+        $globalPercentage += ($numerator/$denominator);
+
+
+        // if ($globalPercentage > Parameters::$stringPropertyThreshold){
+        //     foreach ($stringTwoArray as $item) {
+        //         # code...
+        //         $globalPercentage += 1;
+        //     }
+        // }
+
         $output = (($globalPercentage <= Parameters::$stringPropertyThreshold) ? true : false);
-        return array("pourcentage" => $globalPercentage,
+        return array("percentage" => $globalPercentage,
                      "output"       =>  $output);
     }
 
@@ -158,7 +204,7 @@ class PersonComparator
                 break;
             }
 
-            if ($char != $itemTwoArray[$i])
+            if (strtolower($char) != strtolower($itemTwoArray[$i]))
                 $diff++;
 
             $i++;
@@ -169,7 +215,7 @@ class PersonComparator
         }
         $longest = (($length2 > $length1) ? $length2 : $length1);
 
-        $percentage = ($diff / $longest);
+        $percentage = (int)$diff."/".(int)$longest;
 
         return $percentage;
     } 

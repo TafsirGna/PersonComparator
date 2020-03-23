@@ -26,8 +26,9 @@ class DbOnePerson extends Person
      */
     private $comparisonResults;
 
-    public function __construct()
+    public function __construct(Person $person = null)
     {
+        parent::__construct($person);
         $this->comparisonResults = new ArrayCollection();
     }
 

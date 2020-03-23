@@ -21,16 +21,27 @@ class ComparisonResult
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\DbOnePerson", inversedBy="comparisonResults")
+     * @ORM\ManyToOne(targetEntity="App\Entity\DbOnePerson", inversedBy="comparisonResults", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $dbOnePerson;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\DbTwoPerson", inversedBy="comparisonResults")
+     * @ORM\ManyToOne(targetEntity="App\Entity\DbTwoPerson", inversedBy="comparisonResults", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $dbTwoPerson;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $result = [];
+
+    public function __construct(?DbOnePerson $dbOnePerson, ?DbTwoPerson $dbTwoPerson, $result = null){
+        $this->dbOnePerson = $dbOnePerson;
+        $this->dbTwoPerson = $dbTwoPerson;
+        $this->result = $result;
+    }
 
     public function getId(): ?int
     {
@@ -57,6 +68,18 @@ class ComparisonResult
     public function setDbTwoPerson(?DbTwoPerson $dbTwoPerson): self
     {
         $this->dbTwoPerson = $dbTwoPerson;
+
+        return $this;
+    }
+
+    public function getResult(): ?array
+    {
+        return $this->result;
+    }
+
+    public function setResult(array $result): self
+    {
+        $this->result = $result;
 
         return $this;
     }
