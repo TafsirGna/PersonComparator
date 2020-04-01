@@ -125,11 +125,11 @@ class PersonComparator
             $stringOneArray = $tmp;
         }
 
-        // dd($stringOneArray, $stringTwoArray);
-
         $globalPercentage = 0;
         
         $someDataArray = [];
+
+        // dd($stringOneArray, $stringTwoArray);
 
         // filling in the array declared just above
         foreach ($stringOneArray as $itemOne) {
@@ -139,7 +139,7 @@ class PersonComparator
             }
         }
 
-        // var_dump($someDataArray);
+        // dd($someDataArray);
 
         // after being filled, we get through the array
         $results = [];
@@ -150,7 +150,7 @@ class PersonComparator
                 foreach ($itemOne as $keyTwo => $itemTwo) {
                     $itemTwo = explode("/", $itemTwo);
                     $itemTwo = ($itemTwo[0]/$itemTwo[1]);
-                    if ($itemTwo < $min[2]){
+                    if ($itemTwo <= $min[2]){
                         $min = [$keyOne, $keyTwo, $someDataArray[$keyOne][$keyTwo]];
                     }
                 }
@@ -177,6 +177,8 @@ class PersonComparator
         //         $globalPercentage += 1;
         //     }
         // }
+
+        // dd($stringOneArray, $stringTwoArray);
 
         $output = (($globalPercentage <= Parameters::$stringPropertyThreshold) ? true : false);
         return array("percentage" => $globalPercentage,
