@@ -34,6 +34,11 @@ class Person
     protected $birthPlace;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $spouseLastName;
+
+    /**
      * 
      */
     public function __construct(Person $person = null)
@@ -95,6 +100,18 @@ class Person
     public function setBirthPlace(string $birthPlace): self
     {
         $this->birthPlace = $birthPlace;
+
+        return $this;
+    }
+
+    public function getSpouseLastName(): ?string
+    {
+        return $this->spouseLastName;
+    }
+
+    public function setSpouseLastName(string $spouseLastName): self
+    {
+        $this->spouseLastName = $spouseLastName;
 
         return $this;
     }

@@ -14,10 +14,21 @@ class Parameters
      * @var array
      */
     public static $weights = [
-        "firstName" =>  4,
+        "firstName" =>  3,
         "lastName"  =>  4,
         "birthDate" =>  1,
-        "birthPlace"    =>  1
+        "birthPlace"    =>  1,
+        "spouseLastName"    => 1
+    ];
+
+    /**
+     * @var array
+     */
+    public static $spouseKeyWords = [
+        "epse",
+        "épse",
+        "epouse",
+        "épouse"
     ];
 
     /**

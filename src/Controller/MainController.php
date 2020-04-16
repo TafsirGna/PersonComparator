@@ -47,6 +47,7 @@ class MainController extends AbstractController
                 "lastName" => [$output["lastName"]["percentage"], $output["lastName"]["output"]],
                 "birthDate" => [$output["birthDate"]["output"]],
                 "birthPlace" => [$output["birthPlace"]["percentage"], $output["birthPlace"]["output"]],
+                "spouseLastName" => [$output["spouseLastName"]["percentage"], $output["spouseLastName"]["output"]],
                 "result"    => [$output["globalOutput"]["percentage"], $output["globalOutput"]["output"]],
             ];
 
@@ -59,9 +60,11 @@ class MainController extends AbstractController
             $em->persist($comparisonResult);
             $em->flush();
 
+            // $output = ["response"   =>   $output["globalOutput"]["output"]];
             return $this->json($output, Response::HTTP_OK, []);
         }
 
+        $output = ["response"   =>  null];
         return $this->json($output, Response::HTTP_BAD_REQUEST, []);
     }
 }

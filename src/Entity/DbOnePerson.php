@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class DbOnePerson extends Person
 {
-    use TimestampTrait, UserActionsTrait;
+    use TimestampTrait/* , UserActionsTrait */;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

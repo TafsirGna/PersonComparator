@@ -45,7 +45,7 @@ class PersonComparator
             return null;
 
         $dataArray = explode($this->delimiter, $data);
-        if (sizeof($dataArray) != 4)
+        if ((sizeof($dataArray) < (sizeof(Parameters::$weights)-1)) || (sizeof($dataArray) > sizeof(Parameters::$weights)))
             return null;
 
         if (($dataArray[2] = strtotime($dataArray[2])) === false)
@@ -53,14 +53,43 @@ class PersonComparator
 
         $dataArray[2] = new \DateTime(date("d-m-Y",$dataArray[2]));
 
+        $lastName = $dataArray[0];
+        $pos = false; 
+        $keyWord = null;
+        foreach (Parameters::$spouseKeyWords as $word) {
+            # code...
+            $pos = strpos(strtolower($lastName), $word);
+            if ($pos !== false){
+                $keyWord = $word;
+                break;
+            }
+        }
+
+        if ($pos !== false && (sizeof($dataArray) == sizeof(Parameters::$weights)))
+            return null;
+
+        $spouseLastName = null;
+        if ($pos !== false){
+            $pos += (strlen($keyWord)+1);
+
+            $strArray = str_split($lastName);
+            while ($strArray[$pos] == " ")
+                $pos++;
+
+            $spouseLastName = substr($lastName, $pos);
+        }
+
         $person = new Person();
         $person->setFirstName($dataArray[0]);
         $person->setLastName($dataArray[1]);
         $person->setBirthDate($dataArray[2]);
         $person->setBirthPlace($dataArray[3]);
-
+        if ($spouseLastName !== null)
+            $person->setSpouseLastName($spouseLastName);
+        elseif (sizeof($dataArray) == sizeof(Parameters::$weights)) {
+            $person->setSpouseLastName($dataArray[4]);
+        }
         return $person;  
-
     }
 
     /**
@@ -93,11 +122,15 @@ class PersonComparator
         $result["birthPlace"] = $this->comparePersonProperty($this->personOne->getBirthPlace(), 
                                               $this->personTwo->getBirthPlace());
 
+        $result["spouseLastName"] = $this->comparePersonProperty($this->personOne->getSpouseLastName(), 
+                                              $this->personTwo->getSpouseLastName());
+
         // echo (int) $result["firstName"]["output"];
         $globalPercentage = Parameters::$weights["firstName"] * (int) $result["firstName"]["output"] + 
                             Parameters::$weights["lastName"] * (int) $result["lastName"]["output"] + 
                             Parameters::$weights["birthDate"] * (int) $result["birthDate"]["output"] + 
-                            Parameters::$weights["birthPlace"] * (int) $result["birthPlace"]["output"];
+                            Parameters::$weights["birthPlace"] * (int) $result["birthPlace"]["output"]+
+                            Parameters::$weights["spouseLastName"] * (int) $result["spouseLastName"]["output"];;
         $globalPercentage /= 10;
 
         $output = (($globalPercentage > Parameters::$globalThreshold) ? true : false);
