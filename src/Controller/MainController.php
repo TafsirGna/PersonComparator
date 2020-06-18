@@ -61,7 +61,7 @@ class MainController extends AbstractController
             $em->flush();
 
             // $output = ["response"   =>   $output["globalOutput"]["output"]];
-            return $this->json($output, Response::HTTP_OK, []);
+            return $this->json(["output"    =>  $output["globalOutput"]["output"]], Response::HTTP_OK, []);
         }
 
         $output = ["response"   =>  null];

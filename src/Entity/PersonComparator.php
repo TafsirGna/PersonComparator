@@ -308,5 +308,4 @@ class PersonComparator
     public function getPersonTwo(){
         return $this->personTwo;
     }
-
 }
